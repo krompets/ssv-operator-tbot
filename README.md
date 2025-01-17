@@ -29,6 +29,7 @@ docker-compose build
 docker-compose up -d
 ```
 # Usage:
+Bot located here: https://t.me/ssv_operator_checker_bot
 
 Commands:
 
