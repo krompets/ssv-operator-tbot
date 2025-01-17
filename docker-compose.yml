@@ -7,5 +7,5 @@ services:
     env_file:
       - .env
     volumes:
-      - ./users.db:/app/users.db
+      - ./data:/app/data
     restart: always
