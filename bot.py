@@ -11,10 +11,11 @@ load_dotenv()
 
 # API URL
 BASE_URL = "https://api.ssv.network/api/v4/mainnet/operators/"
+DB_PATH = "/app/data/users.db"
 
 # Database setup
 def init_db():
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS users (chat_id INTEGER PRIMARY KEY, operator_id TEXT, time_to_send TEXT)"
@@ -38,7 +39,7 @@ def set_operator(update: Update, context: CallbackContext) -> None:
     operator_id = context.args[0]
     chat_id = update.message.chat_id
 
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
         "INSERT OR REPLACE INTO users (chat_id, operator_id, time_to_send) VALUES (?, ?, ?)",
@@ -63,7 +64,7 @@ def set_time(update: Update, context: CallbackContext) -> None:
 
     chat_id = update.message.chat_id
 
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
         "UPDATE users SET time_to_send = ? WHERE chat_id = ?",
@@ -78,7 +79,7 @@ def set_time(update: Update, context: CallbackContext) -> None:
 def get_data(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
 
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT operator_id FROM users WHERE chat_id = ?", (chat_id,))
     row = cursor.fetchone()
@@ -119,7 +120,7 @@ def get_data(update: Update, context: CallbackContext) -> None:
 
 # Job to send daily updates
 def daily_update(context: CallbackContext) -> None:
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT chat_id, operator_id, time_to_send FROM users")
     rows = cursor.fetchall()
